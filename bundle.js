@@ -20,7 +20,7 @@ var input = {
   right: false
 }
 var camera = new Camera(canvas);
-var backgrounds = [new Background("space.png", 10)];//, new Background("planets.png", 2), new Background("asteroids.png", 3)];
+var backgrounds = [new Background("space.png", 1), new Background("planets.png", 3), new Background("asteroids.png", 7)];
 var bullets = new BulletPool(10);
 var missiles = [];
 var player = new Player(bullets, missiles);
