@@ -29,7 +29,8 @@ function Player(bullets, missiles) {
   this.health = 100;
   this.img = new Image()
   this.img.src = 'assets/tyrian.shp.007D3C.png';
-  this.temp = 0;
+  this.weaponCooldown = 1000;
+  this.cooldownElapsed = 1000;
 }
 
 /**
@@ -48,6 +49,15 @@ Player.prototype.update = function(elapsedTime, input) {
   this.velocity.y = 0;
   if(input.up) this.velocity.y -= PLAYER_SPEED / 2;
   if(input.down) this.velocity.y += PLAYER_SPEED / 2;
+  console.log(this.cooldownElapsed)
+  if(this.cooldownElapsed >= this.weaponCooldown) {
+    if(input.shoot) {
+      this.fireBullet();
+      this.cooldownElapsed = 0;
+    }
+  } else {
+    this.cooldownElapsed += elapsedTime;
+  }
 
   // determine player angle
   this.angle = 0;
@@ -84,9 +94,10 @@ Player.prototype.render = function(elapasedTime, ctx) {
  * @param {Vector} direction
  */
 Player.prototype.fireBullet = function(direction) {
-  var position = Vector.add(this.position, {x:30, y:30});
-  var velocity = Vector.scale(Vector.normalize(direction), BULLET_SPEED);
-  this.bullets.add(position, velocity);
+  console.log("shoot");
+  //var position = Vector.add(this.position, {x:30, y:30});
+  //var velocity = Vector.scale(Vector.normalize(direction), BULLET_SPEED);
+  //this.bullets.add(position, velocity);
 }
 
 /**

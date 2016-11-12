@@ -16,7 +16,8 @@ var input = {
   up: false,
   down: false,
   left: false,
-  right: false
+  right: false,
+  shoot: false
 }
 var camera = new Camera(canvas);
 var backgrounds = [new Background("space.png", 1), new Background("planets.png", 3), new Background("asteroids.png", 7)];
@@ -50,6 +51,10 @@ window.onkeydown = function(event) {
       input.right = true;
       event.preventDefault();
       break;
+    case " ":
+      input.shoot = true;
+      event.preventDefault();
+      break;
   }
 }
 
@@ -77,6 +82,10 @@ window.onkeyup = function(event) {
     case "ArrowRight":
     case "d":
       input.right = false;
+      event.preventDefault();
+      break;
+    case " ":
+      input.shoot = false;
       event.preventDefault();
       break;
   }
@@ -189,7 +198,7 @@ function renderWorld(elapsedTime, ctx) {
 function renderGUI(elapsedTime, ctx) {
   //draw black gui background for visibility 
   ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, 15);
+  ctx.fillRect(0, 0, canvas.width, 30);
   //'Health:' text
   ctx.fillStyle = "white";
   ctx.font = "Georgia 20px oblique";
@@ -197,4 +206,16 @@ function renderGUI(elapsedTime, ctx) {
   //draw health bar
   ctx.fillStyle = "red";
   ctx.fillRect(35, 2, ((canvas.width - 40) / 100) * player.health, 10);
+  //'Cooldown:' text
+  ctx.fillStyle = "white";
+  ctx.font = "Georgia 20px oblique";
+  ctx.fillText("Cooldown:", 0, 22);
+  //draw weapon cooldown bar
+  if (player.cooldownElapsed < player.weaponCooldown) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(50, 15, (canvas.width - 55) * (player.cooldownElapsed / player.weaponCooldown), 10);
+  } else {
+    ctx.fillStyle = "green";
+    ctx.fillRect(50, 15, (canvas.width - 55), 10);
+  }
 }
