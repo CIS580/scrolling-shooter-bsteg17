@@ -5,9 +5,17 @@
     <link type="text/css" rel="stylesheet" href="game.css" />
   </head>
   <body>
-    <h1>Play Scrolling Shooter</h1>
     <canvas id="screen" width="1024" height="786"></canvas>
-    <h2>Instructions</h2>
+    <script type="text/javascript">
+      var screen = document.getElementById("screen");
+      //fit canvas to viewport
+      var widthHeightRatio = screen.width / screen.height;
+      screen.height = window.innerHeight;
+      screen.width = screen.height * widthHeightRatio;
+      //move canvas to 0, 0 position in viewport
+      screen.style.left = "0px";
+      screen.style.top = "0px";
+    </script>
     <script type="text/javascript" src="bundle.js"></script>
   </body>
 </html>
