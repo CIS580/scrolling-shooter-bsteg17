@@ -6,6 +6,7 @@ const Vector = require('./vector');
 const Camera = require('./camera');
 const Player = require('./player');
 const BulletPool = require('./bullet_pool');
+const Background = require('./background');
 
 
 /* Global variables */
@@ -18,6 +19,7 @@ var input = {
   right: false
 }
 var camera = new Camera(canvas);
+var backgrounds = [new Background("space.png", 10)];//, new Background("planets.png", 2), new Background("asteroids.png", 3)];
 var bullets = new BulletPool(10);
 var missiles = [];
 var player = new Player(bullets, missiles);
@@ -103,7 +105,10 @@ function update(elapsedTime) {
 
   // update the player
   player.update(elapsedTime, input);
-
+  
+  // update the background
+  backgrounds.forEach(function(bg){ bg.update(); });
+  
   // update the camera
   camera.update(player.position);
 
@@ -138,6 +143,7 @@ function render(elapsedTime, ctx) {
   ctx.fillRect(0, 0, 1024, 786);
 
   // TODO: Render background
+  backgrounds.forEach(function(bg){ bg.render(); });
 
   // Transform the coordinate system using
   // the camera position BEFORE rendering
