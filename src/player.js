@@ -26,8 +26,10 @@ function Player(bullets, missiles) {
   this.angle = 0;
   this.position = {x: 200, y: 200};
   this.velocity = {x: 0, y: 0};
+  this.health = 100;
   this.img = new Image()
   this.img.src = 'assets/tyrian.shp.007D3C.png';
+  this.temp = 0;
 }
 
 /**

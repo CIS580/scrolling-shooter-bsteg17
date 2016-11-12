@@ -187,5 +187,14 @@ function renderWorld(elapsedTime, ctx) {
   * @param {CanvasRenderingContext2D} ctx
   */
 function renderGUI(elapsedTime, ctx) {
-  // TODO: Render the GUI
+  //draw black gui background for visibility 
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, 15);
+  //'Health:' text
+  ctx.fillStyle = "white";
+  ctx.font = "Georgia 20px oblique";
+  ctx.fillText("Health:", 0, 10);
+  //draw health bar
+  ctx.fillStyle = "red";
+  ctx.fillRect(35, 2, ((canvas.width - 40) / 100) * player.health, 10);
 }

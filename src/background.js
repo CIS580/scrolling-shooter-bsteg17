@@ -40,7 +40,6 @@ function Background(imgSrc, speed) {
 Background.prototype.update = function(elapsedTime, input) {
   this.y += this.speed;
   if (this.y >= this.canvas.height) this.y = 0;
-  console.log(this.y);
 }
 
 /**
