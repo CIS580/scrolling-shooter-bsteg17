@@ -52,7 +52,7 @@ Player.prototype.update = function(elapsedTime, input) {
   console.log(this.cooldownElapsed)
   if(this.cooldownElapsed >= this.weaponCooldown) {
     if(input.shoot) {
-      this.fireBullet();
+      this.fireBullet({x:0, y:-50});
       this.cooldownElapsed = 0;
     }
   } else {
@@ -94,10 +94,9 @@ Player.prototype.render = function(elapasedTime, ctx) {
  * @param {Vector} direction
  */
 Player.prototype.fireBullet = function(direction) {
-  console.log("shoot");
-  //var position = Vector.add(this.position, {x:30, y:30});
-  //var velocity = Vector.scale(Vector.normalize(direction), BULLET_SPEED);
-  //this.bullets.add(position, velocity);
+  var position = Vector.add(this.position, {x:0, y:0});
+  var velocity = Vector.scale(Vector.normalize(direction), BULLET_SPEED);
+  this.bullets.add(position, velocity);
 }
 
 /**
