@@ -52,7 +52,7 @@ Enemy.prototype.initForType = function(type, options) {
       self.initDivebomb(options);
       break;
     case "zigzag":
-      self.initZigZag();
+      self.initZigZag(options);
       break;
   }
 }
@@ -74,8 +74,15 @@ Enemy.prototype.initDivebomb  = function(options) {
 
 Enemy.prototype.initZigZag = function(options) {
   this.type = "zigzag";
-  this.horizontalSpeed = 20;
-  this.verticalSpeed = 5;
+  this.screenProgress = options.screenProgress;
+  if (this.screenProgress == "horizontal") {
+    this.horizontalSpeed = 5;
+    this.verticalSpeed = 20;
+  }
+  else if (this.screenProgress == "vertical") {
+    this.horizontalSpeed = 20;
+    this.verticalSpeed = 5;
+  }
   this.direction = 1;
 }
 
@@ -92,8 +99,8 @@ Enemy.prototype.update = function(elapsedTime, enemies) {
   this.updateForType();
 
   // kill enemy once they move offscreen 
-  if(this.position.y > this.canvas.height) this.destroy(enemies);
-  //console.log(enemies);
+  if(this.position.y > this.canvas.height || this.position.x > this.canvas.width) this.destroy(enemies);
+  console.log(enemies);
 }
 
 Enemy.prototype.updateForType = function() {
@@ -129,9 +136,18 @@ Enemy.prototype.divebombUpdate = function() {
 }
 
 Enemy.prototype.zigZagUpdate = function() {
-  if (this.position.x < 0 || this.canvas.width < (this.position.x + this.width)) this.direction *= -1;
-  this.position.x += this.horizontalSpeed * this.direction;
-  this.position.y += this.verticalSpeed;
+  switch(this.screenProgress) {
+    case "vertical":
+      if (this.position.x < 0 || this.canvas.width < (this.position.x + this.width)) this.direction *= -1;
+        this.position.x += this.horizontalSpeed * this.direction;
+        this.position.y += this.verticalSpeed;
+      break;
+    case "horizontal":
+      if (this.position.y < 0 || this.canvas.height < (this.position.y + this.height)) this.direction *= -1;
+        this.position.x += this.horizontalSpeed;
+        this.position.y += this.verticalSpeed * this.direction;
+      break;
+  }
   console.log(this.position);
 }
 
