@@ -29,8 +29,8 @@ function Player(bullets, missiles) {
   this.health = 100;
   this.img = new Image()
   this.img.src = 'assets/tyrian.shp.007D3C.png';
-  this.weaponCooldown = 1000;
-  this.cooldownElapsed = 1000;
+  this.weaponCooldown = 300;
+  this.cooldownElapsed = 300;
 }
 
 /**
@@ -49,7 +49,6 @@ Player.prototype.update = function(elapsedTime, input) {
   this.velocity.y = 0;
   if(input.up) this.velocity.y -= PLAYER_SPEED / 2;
   if(input.down) this.velocity.y += PLAYER_SPEED / 2;
-  console.log(this.cooldownElapsed)
   if(this.cooldownElapsed >= this.weaponCooldown) {
     if(input.shoot) {
       this.fireBullet({x:0, y:-50});

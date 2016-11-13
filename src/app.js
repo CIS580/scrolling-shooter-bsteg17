@@ -5,6 +5,7 @@ const Game = require('./game');
 const Vector = require('./vector');
 const Camera = require('./camera');
 const Player = require('./player');
+const Enemy = require('./enemy');
 const BulletPool = require('./bullet_pool');
 const Background = require('./background');
 
@@ -24,6 +25,7 @@ var backgrounds = [new Background("space.png", 1), new Background("planets.png",
 var bullets = new BulletPool(10);
 var missiles = [];
 var player = new Player(bullets, missiles);
+var enemies = [new Enemy(bullets, {x:50, y:100}, "spinny")];
 
 /**
  * @function onkeydown
@@ -114,6 +116,9 @@ function update(elapsedTime) {
 
   // update the player
   player.update(elapsedTime, input);
+
+  // update the enemy 
+  enemies.forEach(function(e){ e.update(elapsedTime, enemies); });
   
   // update the background
   backgrounds.forEach(function(bg){ bg.update(); });
@@ -187,6 +192,7 @@ function renderWorld(elapsedTime, ctx) {
 
     // Render the player
     player.render(elapsedTime, ctx);
+    enemies.forEach(function(e){ e.render(elapsedTime, ctx); });
 }
 
 /**
