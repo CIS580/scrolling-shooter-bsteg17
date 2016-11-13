@@ -19,7 +19,7 @@ module.exports = exports = Enemy;
  * Creates a enemy
  * @param {BulletPool} bullets the bullet pool
  */
-function Enemy(bullets, position, type) {
+function Enemy(bullets, position, type, options) {
   this.canvas = document.getElementById("screen");
   this.bullets = bullets;
   this.angle = 0;
@@ -27,8 +27,7 @@ function Enemy(bullets, position, type) {
   this.health = 100;
   this.img = new Image();
   //this.img.src = this.getSkin();
-  this.timer = 0;
-  this.initForType(type);
+  this.initForType(type, options);
 }
 
 Enemy.prototype.getSkin = function(type) {
@@ -41,19 +40,31 @@ Enemy.prototype.getSkin = function(type) {
   return skin;
 }
 
-Enemy.prototype.initForType = function(type) {
+Enemy.prototype.initForType = function(type, options) {
   self = this;
   switch(type){
     case "spinny":
       self.initSpinny();
+      break;
+    case "divebomb":
+      self.initDivebomb(options);
+      break;
   }
 }
 
 Enemy.prototype.initSpinny = function() {
   this.type = "spinny";
+  this.timer = 0;
   this.centerOfSpin = {x: this.position.x, y: this.position.y};
   this.radians = 0;
   this.radius = 20;
+}
+
+Enemy.prototype.initDivebomb  = function(options) {
+  this.type = "divebomb";
+  this.divebombSpeed = 10;
+  this.divebombPosition = options.divebombPosition;
+  this.divebombing = false;
 }
 
 /**
@@ -70,6 +81,7 @@ Enemy.prototype.update = function(elapsedTime, enemies) {
 
   // kill enemy once they move offscreen 
   if(this.position.y > this.canvas.height) this.destroy(enemies);
+  //console.log(enemies);
 }
 
 Enemy.prototype.updateForType = function() {
@@ -77,6 +89,9 @@ Enemy.prototype.updateForType = function() {
   switch(self.type) {
     case "spinny":
       self.spinnyUpdate();
+      break;
+    case "divebomb":
+      self.divebombUpdate();
       break;
   }
 }
@@ -86,6 +101,17 @@ Enemy.prototype.spinnyUpdate = function() {
   this.position.y = this.centerOfSpin.y + (Math.sin(this.radians) * this.radius);
   this.radians += .2;
   this.centerOfSpin.y += 10;
+}
+
+Enemy.prototype.divebombUpdate = function() {
+  if (this.position.y >= this.divebombPosition.y) this.divebombing = true;
+  if(!this.divebombing) {
+    //this.position = Vector.add(this.position, Vector.normalize(Vector.subtract(this.position, this.divebombPosition)) * 5);
+    this.position = Vector.add(this.position, Vector.scale(Vector.normalize(Vector.subtract(this.divebombPosition, this.position)), 5));
+  } else {
+    this.position.y += this.divebombSpeed;
+  }
+  console.log(this.position);
 }
 
 /**
