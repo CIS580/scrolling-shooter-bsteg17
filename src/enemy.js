@@ -24,6 +24,8 @@ function Enemy(bullets, position, type, options) {
   this.bullets = bullets;
   this.angle = 0;
   this.position = position;
+  this.width  = 23;
+  this.height = 27;
   this.health = 100;
   this.img = new Image();
   //this.img.src = this.getSkin();
@@ -49,6 +51,9 @@ Enemy.prototype.initForType = function(type, options) {
     case "divebomb":
       self.initDivebomb(options);
       break;
+    case "zigzag":
+      self.initZigZag();
+      break;
   }
 }
 
@@ -65,6 +70,13 @@ Enemy.prototype.initDivebomb  = function(options) {
   this.divebombSpeed = 10;
   this.divebombPosition = options.divebombPosition;
   this.divebombing = false;
+}
+
+Enemy.prototype.initZigZag = function(options) {
+  this.type = "zigzag";
+  this.horizontalSpeed = 20;
+  this.verticalSpeed = 5;
+  this.direction = 1;
 }
 
 /**
@@ -93,6 +105,9 @@ Enemy.prototype.updateForType = function() {
     case "divebomb":
       self.divebombUpdate();
       break;
+    case "zigzag":
+      self.zigZagUpdate();
+      break;
   }
 }
 
@@ -111,6 +126,12 @@ Enemy.prototype.divebombUpdate = function() {
   } else {
     this.position.y += this.divebombSpeed;
   }
+}
+
+Enemy.prototype.zigZagUpdate = function() {
+  if (this.position.x < 0 || this.canvas.width < (this.position.x + this.width)) this.direction *= -1;
+  this.position.x += this.horizontalSpeed * this.direction;
+  this.position.y += this.verticalSpeed;
   console.log(this.position);
 }
 
@@ -125,7 +146,7 @@ Enemy.prototype.render = function(elapasedTime, ctx) {
   ctx.save();
   ctx.translate(this.position.x, this.position.y);
   ctx.fillStyle = "yellow";
-  ctx.fillRect(-12.5, -12, 23, 27);
+  ctx.fillRect(-12.5, -12, this.width, this.height);
   //ctx.drawImage(this.img, 48+offset, 57, 23, 27, -12.5, -12, 23, 27);
   ctx.restore();
 }

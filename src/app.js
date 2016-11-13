@@ -25,7 +25,7 @@ var backgrounds = [new Background("space.png", 1), new Background("planets.png",
 var bullets = new BulletPool(10);
 var missiles = [];
 var player = new Player(bullets, missiles);
-var enemies = [new Enemy(bullets, {x:300, y:10}, "divebomb", {divebombPosition:{x:100, y:200}})];
+var enemies = [new Enemy(bullets, {x:300, y:10}, "zigzag")];
 
 /**
  * @function onkeydown
