@@ -5,7 +5,7 @@ const Vector = require('./vector');
 const Missile = require('./missile');
 
 /* Constants */
-const PLAYER_SPEED = 5;
+const PLAYER_SPEED = 10;
 const BULLET_SPEED = 10;
 
 /**
