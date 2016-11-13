@@ -3,10 +3,14 @@
 /* Classes and Libraries */
 const Vector = require('./vector');
 const Missile = require('./missile');
+const SmokeParticles = require('./smoke_particles.js');
 
 /* Constants */
 const PLAYER_SPEED = 10;
 const BULLET_SPEED = 10;
+
+var smokeParticles = new SmokeParticles(500);
+
 
 /**
  * @module Player
@@ -45,9 +49,7 @@ Player.prototype.update = function(elapsedTime, input) {
   // set the velocity
   this.velocity.x = 0;
   if(input.left) this.velocity.x -= PLAYER_SPEED;
-  if(input.right) this.velocity.x += PLAYER_SPEED;
-  this.velocity.y = 0;
-  if(input.up) this.velocity.y -= PLAYER_SPEED / 2;
+  if(input.right) this.velocity.x += PLAYER_SPEED; this.velocity.y = 0; if(input.up) this.velocity.y -= PLAYER_SPEED / 2;
   if(input.down) this.velocity.y += PLAYER_SPEED / 2;
   if(this.cooldownElapsed >= this.weaponCooldown) {
     if(input.shoot) {
@@ -71,6 +73,8 @@ Player.prototype.update = function(elapsedTime, input) {
   if(this.position.x < 0) this.position.x = 0;
   if(this.position.x > 1024) this.position.x = 1024;
   if(this.position.y > 786) this.position.y = 786;
+
+  smokeParticles.update(elapsedTime);
 }
 
 /**
@@ -79,12 +83,13 @@ Player.prototype.update = function(elapsedTime, input) {
  * @param {DOMHighResTimeStamp} elapsedTime
  * @param {CanvasRenderingContext2D} ctx
  */
-Player.prototype.render = function(elapasedTime, ctx) {
+Player.prototype.render = function(elapsedTime, ctx) {
   var offset = this.angle * 23;
   ctx.save();
   ctx.translate(this.position.x, this.position.y);
   ctx.drawImage(this.img, 48+offset, 57, 23, 27, -12.5, -12, 23, 27);
   ctx.restore();
+  smokeParticles.render(elapsedTime, ctx);
 }
 
 /**
@@ -95,6 +100,7 @@ Player.prototype.render = function(elapasedTime, ctx) {
 Player.prototype.fireBullet = function(direction) {
   var position = Vector.add(this.position, {x:0, y:0});
   var velocity = Vector.scale(Vector.normalize(direction), BULLET_SPEED);
+  smokeParticles.emit(this.position);
   this.bullets.add(position, velocity);
 }
 

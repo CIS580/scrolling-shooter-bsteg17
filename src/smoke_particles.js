@@ -47,6 +47,7 @@ SmokeParticles.prototype.emit = function(position) {
 SmokeParticles.prototype.update = function(elapsedTime) {
   function updateParticle(i) {
     this.pool[3*i+2] += elapsedTime;
+    this.pool[3*i+1] += 5;
     if(this.pool[3*i+2] > 2000) this.start = i;
   }
   var i;

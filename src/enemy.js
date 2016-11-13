@@ -54,6 +54,9 @@ Enemy.prototype.initForType = function(type, options) {
     case "zigzag":
       self.initZigZag(options);
       break;
+    case "encircle":
+      self.initEncircle(options);
+      break;
   }
 }
 
@@ -86,6 +89,16 @@ Enemy.prototype.initZigZag = function(options) {
   this.direction = 1;
 }
 
+Enemy.prototype.initEncircle = function(options) {
+  this.type = "encircle";
+  this.radius = options.radius;
+  this.centerOfCircle = {x: this.canvas.width / 2, y: this.canvas.height / 2};
+  this.encircleStart = {x: this.centerOfCircle.x, y: this.centerOfCircle.y - this.radius};
+  this.exitSpeed = 15;
+  this.radians = -Math.PI * .5;
+  this.encircling = false;
+}
+
 /**
  * @function update
  * Updates the enemy based on the supplied input
@@ -100,7 +113,7 @@ Enemy.prototype.update = function(elapsedTime, enemies) {
 
   // kill enemy once they move offscreen 
   if(this.position.y > this.canvas.height || this.position.x > this.canvas.width) this.destroy(enemies);
-  console.log(enemies);
+  //console.log(enemies);
 }
 
 Enemy.prototype.updateForType = function() {
@@ -114,6 +127,9 @@ Enemy.prototype.updateForType = function() {
       break;
     case "zigzag":
       self.zigZagUpdate();
+      break;
+    case "encircle":
+      self.encircleUpdate();
       break;
   }
 }
@@ -139,16 +155,31 @@ Enemy.prototype.zigZagUpdate = function() {
   switch(this.screenProgress) {
     case "vertical":
       if (this.position.x < 0 || this.canvas.width < (this.position.x + this.width)) this.direction *= -1;
-        this.position.x += this.horizontalSpeed * this.direction;
-        this.position.y += this.verticalSpeed;
+      this.position.x += this.horizontalSpeed * this.direction;
+      this.position.y += this.verticalSpeed;
       break;
     case "horizontal":
       if (this.position.y < 0 || this.canvas.height < (this.position.y + this.height)) this.direction *= -1;
-        this.position.x += this.horizontalSpeed;
-        this.position.y += this.verticalSpeed * this.direction;
+      this.position.x += this.horizontalSpeed;
+      this.position.y += this.verticalSpeed * this.direction;
       break;
   }
+}
+
+Enemy.prototype.encircleUpdate = function() {
   console.log(this.position);
+  if(this.position.y >= this.encircleStart.y) this.encircling = true;
+  if(this.radians >= Math.PI * 7.5) {
+    this.position.y += this.exitSpeed;
+    return;
+  }
+  if(!this.encircling) {
+    this.position = Vector.add(this.position, Vector.scale(Vector.normalize(Vector.subtract(this.encircleStart, this.position)), 5));
+    return;
+  }
+  this.position.x = this.centerOfCircle.x + (Math.cos(this.radians) * this.radius);
+  this.position.y = this.centerOfCircle.y + (Math.sin(this.radians) * this.radius);
+  this.radians += .2;
 }
 
 /**
