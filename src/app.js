@@ -27,9 +27,8 @@ var input = {
 }
 var camera = new Camera(canvas);
 var backgrounds = [new Background("space.png", 1), new Background("planets.png", 3), new Background("asteroids.png", 7)];
-var bullets = new BulletPool(10);
 var missiles = [];
-var player = new Player(bullets, missiles);
+var player = new Player(camera);
 var enemies = [];
 var levels = [new Level(0), new Level(1), new Level(2)];
 
@@ -141,12 +140,6 @@ function update(elapsedTime) {
   // update the camera
   camera.update(player.position);
 
-  // Update bullets
-  bullets.update(elapsedTime, function(bullet){
-    if(!camera.onScreen(bullet)) return true;
-    return false;
-  });
-
   // Update missiles
   var markedForRemoval = [];
   missiles.forEach(function(missile, i){
@@ -209,8 +202,6 @@ function renderGameStop(elapsedTime, ctx) {
   * @param {CanvasRenderingContext2D} ctx the context to render to
   */
 function renderWorld(elapsedTime, ctx) {
-    // Render the bullets
-    bullets.render(elapsedTime, ctx);
 
     // Render the missiles
     missiles.forEach(function(missile) {
@@ -244,9 +235,9 @@ function renderGUI(elapsedTime, ctx) {
   ctx.font = "Georgia 20px oblique";
   ctx.fillText("Cooldown:", 0, 22);
   //draw weapon cooldown bar
-  if (player.cooldownElapsed < player.weaponCooldown) {
+  if (player.weapon.cooldownElapsed < player.weapon.weaponCooldown) {
     ctx.fillStyle = "blue";
-    ctx.fillRect(50, 15, (canvas.width - 55) * (player.cooldownElapsed / player.weaponCooldown), 10);
+    ctx.fillRect(50, 15, (canvas.width - 55) * (player.weapon.cooldownElapsed / player.weapon.weaponCooldown), 10);
   } else {
     ctx.fillStyle = "green";
     ctx.fillRect(50, 15, (canvas.width - 55), 10);
