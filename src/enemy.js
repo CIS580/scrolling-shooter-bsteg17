@@ -19,9 +19,8 @@ module.exports = exports = Enemy;
  * Creates a enemy
  * @param {BulletPool} bullets the bullet pool
  */
-function Enemy(bullets, position, type, options) {
+function Enemy(position, type, options) {
   this.canvas = document.getElementById("screen");
-  this.bullets = bullets;
   this.angle = 0;
   this.position = position;
   this.width  = 23;

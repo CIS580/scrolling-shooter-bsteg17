@@ -1,5 +1,7 @@
 "use strict";
 
+var GAME_STOP_TIME = 3000;
+
 /* Classes and Libraries */
 const Game = require('./game');
 const Vector = require('./vector');
@@ -8,11 +10,14 @@ const Player = require('./player');
 const Enemy = require('./enemy');
 const BulletPool = require('./bullet_pool');
 const Background = require('./background');
+const Level = require('./level');
 
 
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
+var gameStop = false;
+var gameStopTimer = 0;
 var input = {
   up: false,
   down: false,
@@ -26,6 +31,7 @@ var bullets = new BulletPool(10);
 var missiles = [];
 var player = new Player(bullets, missiles);
 var enemies = [];
+var levels = [new Level(0), new Level(1), new Level(2)];
 
 /**
  * @function onkeydown
@@ -113,6 +119,15 @@ masterLoop(performance.now());
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
+  if(gameStop) {
+    if(gameStopTimer <= GAME_STOP_TIME) {
+      gameStopTimer += elapsedTime;
+    } else {
+      gameStopTimer = 0;
+      gameStop = false;
+    }
+    return;
+  }
 
   // update the player
   player.update(elapsedTime, input);
@@ -153,6 +168,11 @@ function update(elapsedTime) {
   * @param {CanvasRenderingContext2D} ctx the context to render to
   */
 function render(elapsedTime, ctx) {
+  if(gameStop) {
+    renderGameStop(elapsedTime, ctx);
+    return;
+  }
+    
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, 1024, 786);
 
@@ -172,6 +192,13 @@ function render(elapsedTime, ctx) {
   // Render the GUI without transforming the
   // coordinate system
   renderGUI(elapsedTime, ctx);
+}
+
+function renderGameStop(elapsedTime, ctx) {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.fillText("Level complete. Next level commencing.", 100, 100);
 }
 
 /**
